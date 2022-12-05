@@ -116,9 +116,9 @@ def convert_file(src, dst, tags, base):
         if mdType == "j":
             images = re.findall(r'!\[([^\]]*)\]\(([^\)]+)\)',md)
             if images:
-                print("IMAGES:",base,images)
+                vbprint("IMAGES:",base,images)
                 for i in images:
-                    print(i[0],os.path.isfile(os.path.join(base,i[1])),os.path.join(base,i[1]))
+                    vbprint(i[0],os.path.isfile(os.path.join(base,i[1])),os.path.join(base,i[1]))
                     md = md.replace("![" + i[0] + "](" + i[1] + ")","![" + i[0] + "](" + os.path.join(os.getcwd(),base,i[1]) + ")")
 
         flDst = open(dst, 'w')
