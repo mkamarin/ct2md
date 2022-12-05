@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Convert Cherrytree documents to markdown for Zettlr or logseq
+# Convert Cherrytree documents to markdown (to import in Zettlr, logseq or Joplin)
 
 import os
 import re
@@ -12,8 +12,8 @@ from shutil import rmtree
 from markdownify import markdownify as mdConvert
 
 # Global variables
-verbose = False
 mdType  = ""
+verbose = False
 zettlrID = False
 arRemoveUnderscores = False
 arRemoveNumber = False
@@ -23,12 +23,17 @@ mydate = datetime.datetime.now()
 myID = datetime.datetime.now().strftime("%G%m%d")
 myIDcount = 0
 
+
 def vbprint(*args, **kwargs):
+    """ Verbose print function """
+
     if verbose:
         print(*args, **kwargs)
 
 
 def error(*args, **kwargs):
+    """ Error function to print exception information """
+
     if verbose:
         print("ERROR [",os.path.basename(sys.argv[0]),":",
                 inspect.currentframe().f_back.f_lineno,"]: ",
@@ -38,6 +43,8 @@ def error(*args, **kwargs):
 
 
 def warn(*args, **kwargs):
+    """ Warning function to print exception information """
+
     if verbose:
         print("WARNING [",os.path.basename(sys.argv[0]),":",
                 inspect.currentframe().f_back.f_lineno,"]: ",
@@ -90,7 +97,7 @@ def convert_file(src, dst, tags, base):
             name, ext = os.path.splitext(dst)
             dst = name + str(nIncrement) +  ext
 
-        flSrc = open(src, 'r')
+        flSrc = open(src, 'rt')
         html = flSrc.read()
         flSrc.close()
         md = mdConvert(html, heading_style="ATX", autolinks=False)
@@ -121,7 +128,7 @@ def convert_file(src, dst, tags, base):
                     vbprint(i[0],os.path.isfile(os.path.join(base,i[1])),os.path.join(base,i[1]))
                     md = md.replace("![" + i[0] + "](" + i[1] + ")","![" + i[0] + "](" + os.path.join(os.getcwd(),base,i[1]) + ")")
 
-        flDst = open(dst, 'w')
+        flDst = open(dst, 'wt')
         flDst.write(fm)
         flDst.write(md)
         flDst.close()
@@ -168,6 +175,10 @@ def traverse_path(arPath, arOutput):
                         subdirs,", filename='",filename,"'", sep="")
 
                 ## A) Prepare to process the file
+                # Ignore the CherryTree "index.html" file
+                if filename.lower() == "index.html":
+                    continue
+
                 # sourceName is the complete file name including the directory structure (full path)
                 sourceName = os.path.join(rootDir, filename)
 
@@ -245,7 +256,8 @@ def arguments() :
     sys.exit(2)
 
 def main(argv):
-   # arguments:
+
+   # Argument variables:
    arPath       = "HTML"
    arOutput     = "markdown"
    arInput      = ""
@@ -253,19 +265,20 @@ def main(argv):
    arFlatpak    = False
    arCherrytree = False
 
-   try:
-       opts, args = getopt.getopt(argv,"hvzlijsedno:p:c:C:",
-               ["help","verbose","zettlr","logseq","id","joplin","output=","path=","cherrytree","CherryTree","spaces","numbers","embed","delete"])
-   except getopt.GetoptError as e:
-      error(e)
-      arguments()
-
+   # Global variables:
    global mdType
    global verbose
    global zettlrID
    global arRemoveUnderscores
    global arRemoveNumber
    global arEmbed
+
+   try:
+       opts, args = getopt.getopt(argv,"hvzlijsedno:p:c:C:",
+               ["help","verbose","zettlr","logseq","id","joplin","output=","path=","cherrytree","CherryTree","spaces","numbers","embed","delete"])
+   except getopt.GetoptError as e:
+      error(e)
+      arguments()
 
    for opt, arg in opts:
       if (opt in ("-h","--help")) or (len(sys.argv) == 1):
@@ -304,9 +317,10 @@ def main(argv):
           error("Invalid argument")
           arguments()
 
+   # Need to delete files inside the --output folde
    if arDelete and os.path.isdir(arOutput):
        for fl in os.listdir(arOutput):
-           print("DEL:", fl)
+           vbprint("DEL:", fl)
            try:
                name = os.path.join(arOutput, fl)
                if os.path.isdir(name):
