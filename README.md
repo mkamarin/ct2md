@@ -49,10 +49,11 @@ Flags:
    -n, --numbers           remove the numbers appended by CherryTree to the file names
                            (Example: file name 'foo_274.html' becomes 'foo.md')
    -e, --embed             Embed files withe same name as a folder inside the folder
-   -i, --id                Generates a Zettlr id using YYYYMMDDnnnn where nnnn is sequential
    -j, --joplin            Produces Joplin markdown (set -s, -n and -e)
    -l, --logseq            Produces Logseq markdown
+   -N, --namespace         Generate file names to comply with logseq namespaces
    -z, --zettlr            Produces Zettlr markdown
+   -i, --id                Generates a Zettlr id using YYYYMMDDnnnn where nnnn is sequential
    -h, --help              Prints this help
 ```
 ## Examples

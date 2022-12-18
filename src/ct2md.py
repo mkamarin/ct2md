@@ -18,6 +18,7 @@ zettlrID = False
 arRemoveUnderscores = False
 arRemoveNumber = False
 arEmbed = False
+arNamespace = False
 
 mydate = datetime.datetime.now()
 myID = datetime.datetime.now().strftime("%G%m%d")
@@ -207,7 +208,9 @@ def traverse_path(arPath, arOutput):
                         name = "Unknown" # TODO need to generate a better name in this case
 
                     targetName = name + ".md"
-                    convert_file(sourceName,os.path.join(arOutput,root,targetName.replace("--",os.sep)),tags,arOutput)#os.path.join(arOutput,root))
+                    print("NAME",targetName)
+                    separator = os.sep if not arNamespace else "%2F"
+                    convert_file(sourceName,os.path.join(arOutput,root,targetName.replace("--",separator)),tags,arOutput)#os.path.join(arOutput,root))
                 else:
                     clone_file(sourceName,os.path.join(arOutput,root,filename))
 
@@ -248,10 +251,11 @@ def arguments() :
     print("   -n, --numbers           remove the numbers appended by CherryTree to the file names")
     print("                           (Example: file name 'foo_274.html' becomes 'foo.md')")
     print("   -e, --embed             Embed files withe same name as a folder inside the folder")
-    print("   -i, --id                Generates a Zettlr id using YYYYMMDDnnnn where nnnn is sequential")
     print("   -j, --joplin            Produces Joplin markdown (set -s, -n and -e)")
     print("   -l, --logseq            Produces Logseq markdown")
+    print("   -N, --namespace         Generate file names to comply with logseq namespaces")
     print("   -z, --zettlr            Produces Zettlr markdown")
+    print("   -i, --id                Generates a Zettlr id using YYYYMMDDnnnn where nnnn is sequential")
     print("   -h, --help              Prints this help")
     sys.exit(2)
 
@@ -272,10 +276,11 @@ def main(argv):
    global arRemoveUnderscores
    global arRemoveNumber
    global arEmbed
+   global arNamespace 
 
    try:
-       opts, args = getopt.getopt(argv,"hvzlijsedno:p:c:C:",
-               ["help","verbose","zettlr","logseq","id","joplin","output=","path=","cherrytree","CherryTree","spaces","numbers","embed","delete"])
+       opts, args = getopt.getopt(argv,"hvzlijsednNo:p:c:C:",
+               ["help","verbose","zettlr","logseq","id","joplin","output=","path=","cherrytree","CherryTree","spaces","numbers","embed","delete","namespace"])
    except getopt.GetoptError as e:
       error(e)
       arguments()
@@ -291,6 +296,8 @@ def main(argv):
           mdType = "l"
       elif opt in ("-n", "--numbers"):
           arRemoveNumber = True
+      elif opt in ("-N", "--namespace"):
+          arNamespace = True
       elif opt in ("-s", "--spaces"):
           arRemoveUnderscores = True
       elif opt in ("-e", "--embed"):
