@@ -44,6 +44,7 @@ Flags:
    -d, --delete            Delete the content of the output folder if present
                            (Example: if output folder is markdown, then markdown/* is deleted)
    -v, --verbose           Produces verbose stdout output
+   -b, --blanks            Replaces multiple blank lines with only one
    -s, --spaces            replaces underscores (_) in file names with spaces
                            (Example: file name 'foo_zoo.html' becomes 'foo zoo.md')
    -n, --numbers           remove the numbers appended by CherryTree to the file names

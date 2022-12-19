@@ -18,6 +18,7 @@ zettlrID = False
 arRemoveUnderscores = False
 arRemoveNumber = False
 arEmbed = False
+arBlanks = False
 arNamespace = False
 
 mydate = datetime.datetime.now()
@@ -102,6 +103,10 @@ def convert_file(src, dst, tags, base):
         html = flSrc.read()
         flSrc.close()
         md = mdConvert(html, heading_style="ATX", autolinks=False)
+
+        # Remove extra blank lines
+        if arBlanks:
+            md = re.sub('\n\s*\n','\n\n',md)
 
         # Front matter
         fm = ""
@@ -246,6 +251,7 @@ def arguments() :
     print("   -d, --delete            Delete the content of the output folder if present")
     print("                           (Example: if output folder is markdown, then markdown/* is deleted)")
     print("   -v, --verbose           Produces verbose stdout output")
+    print("   -b, --blanks            Replaces multiple blank lines with only one")
     print("   -s, --spaces            replaces underscores (_) in file names with spaces")
     print("                           (Example: file name 'foo_zoo.html' becomes 'foo zoo.md')")
     print("   -n, --numbers           remove the numbers appended by CherryTree to the file names")
@@ -276,11 +282,12 @@ def main(argv):
    global arRemoveUnderscores
    global arRemoveNumber
    global arEmbed
+   global arBlanks
    global arNamespace 
 
    try:
-       opts, args = getopt.getopt(argv,"hvzlijsednNo:p:c:C:",
-               ["help","verbose","zettlr","logseq","id","joplin","output=","path=","cherrytree","CherryTree","spaces","numbers","embed","delete","namespace"])
+       opts, args = getopt.getopt(argv,"hbvzlijsednNo:p:c:C:",
+               ["help","verbose","zettlr","logseq","id","joplin","output=","path=","cherrytree","CherryTree","spaces","numbers","embed","delete","namespace","blanks"])
    except getopt.GetoptError as e:
       error(e)
       arguments()
@@ -304,6 +311,8 @@ def main(argv):
           arEmbed = True
       elif opt in ("-i", "--id"):
           zettlrID = True
+      elif opt in ("-b", "--blanks"):
+          arBlanks = True
       elif opt in ("-d", "--delete"):
           arDelete = True
       elif opt in ("-v", "--verbose"):
