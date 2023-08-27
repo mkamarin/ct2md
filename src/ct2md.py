@@ -163,11 +163,7 @@ def clone_file(src, dst):
         dstFolder = os.path.dirname(dst)
         if not os.path.exists(dstFolder):
             os.makedirs(dstFolder)
-
-        with open(src, 'rb') as flSrc:
-            with open(dst, 'wb') as flDst:
-                flDst.write(flSrc.read(4096))
-
+        open(dst, 'wb').write(open(src, 'rb').read())
     except OSError as e:
         error(e, " while clonning files", src,"=>",dst)
 
